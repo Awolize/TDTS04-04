@@ -6,7 +6,7 @@ public class RouterNode {
     private GuiTextArea myGUI;
     private RouterSimulator sim;
 
-    private boolean PoisonReverse = true;
+    private boolean PoisonReverse = false;
     private int INFINITY = RouterSimulator.INFINITY;
     private int numOfNodes = RouterSimulator.NUM_NODES;
 
@@ -41,28 +41,25 @@ public class RouterNode {
 
       	// notify connected nodes
       	broadcast();
-
       	printDistanceTable();
     }
 
     //--------------------------------------------------
     public void recvUpdate(RouterPacket pkt) {
-	// Check if
-	distanceTable[pkt.sourceid] = pkt.mincost;
-	if (Bellman())
-	    broadcast();
+      	// Check if
+      	distanceTable[pkt.sourceid] = pkt.mincost;
+      	if (Bellman())
+      	    broadcast();
     }
 
     //--------------------------------------------------
     private void sendUpdate(RouterPacket pkt) {
-	// PoisonReverse
-	if (PoisonReverse)
-	{
-	    for (int i = 0; i < numOfNodes; i++)
-		if (distanceTable[myID][i] == pkt.destid)
-		    pkt.mincost[i] = INFINITY;
-	}
-	sim.toLayer2(pkt);
+      	// PoisonReverse
+      	if (PoisonReverse)
+      	    for (int i = 0; i < numOfNodes; i++)
+            		if (distanceTable[myID][i] == pkt.destid)
+            		    pkt.mincost[i] = INFINITY;
+      	sim.toLayer2(pkt);
     }
 
     //--------------------------------------------------
@@ -78,11 +75,11 @@ public class RouterNode {
       	for(int i = 0; i < numOfNodes; i++)
       	    myGUI.print("--------------------");
       	for(int i = 0; i < numOfNodes; i++)
-      	    if (i != myID && costs[i] != 999)
+      	    if (i != myID && costs[i] != INFINITY)
       	    {
-      		myGUI.print("\n" + " nbr " + i + "   | " + "\t");
-      		for(int j = 0; j < numOfNodes; j++)
-      		    myGUI.print(distanceTable[i][j] + "\t");
+      		      myGUI.print("\n" + " nbr " + i + "   | " + "\t");
+      		      for(int j = 0; j < numOfNodes; j++)
+      		          myGUI.print(distanceTable[i][j] + "\t");
       	    }
       	myGUI.print("\n\n");
 
@@ -90,18 +87,21 @@ public class RouterNode {
       	myGUI.print("     dst  |");
       	for(int i = 0; i < numOfNodes; i++)
       	    myGUI.print("\t" + i);
+
       	myGUI.print("\n-------------");
       	for(int i = 0; i < numOfNodes; i++)
       	    myGUI.print("--------------------");
+
       	myGUI.print("\n   cost  |\t");
       	for(int i = 0; i < numOfNodes; i++)
-      	    if (costs[i] != 999)
-      		myGUI.print(String.valueOf(costs[i]) + "\t");
-      	    else
-      		myGUI.print("-\t");
+            myGUI.print(String.valueOf(distanceTable[myID][i]) + "\t");
+
       	myGUI.print("\n  route |\t");
       	for(int i = 0; i < RouterSimulator.NUM_NODES; i++)
-      	    myGUI.print(String.valueOf(route[i]) + "\t");
+            if(route[i] == -1)
+                myGUI.print("-\t");
+            else
+                myGUI.print(String.valueOf(route[i]) + "\t");
     }
     //--------------------------------------------------
     public void updateLinkCost(int dest, int newcost) {

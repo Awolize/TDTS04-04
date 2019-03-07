@@ -17,7 +17,7 @@ public class RouterSimulator {
   public static final int NUM_NODES = 4;
   public static final int INFINITY = 999;
 
-  public static final boolean LINKCHANGES = false;
+  public static final boolean LINKCHANGES = true;
 
   public int TRACE = 1;             /* for debugging */
 
@@ -49,7 +49,7 @@ should not have to, and you defeinitely should not have to modify
 
   /* possible events: */
   final static int FROM_LAYER2 = 2;
-  final static int LINK_CHANGE   =  10;
+  final static int LINK_CHANGE = 10;
 
   double clocktime = 0.000;
 
